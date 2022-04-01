@@ -61,8 +61,8 @@ if exist('Grain_stress_sample','var')
     sSlocal   = rot_sample * sS;
 end
 %tau    = sS.SchmidFactor(line);
-SF      = sSlocal.SchmidFactor(sigma); %plot(SF)
-sSlocal.CRSS = abs(SF)'/0.5;
+SF      = abs(sSlocal.SchmidFactor(sigma)); %plot(SF)
+sSlocal.CRSS = (SF)'/0.5;
 %plot(grain,SFMax,'micronba r','off','linewidth',2);  hold on;    legend off
 
 %%
@@ -90,32 +90,23 @@ while iO<=length(sS)
     iO=iO+io;
 end
 %}
-%% plot
-close all;
-for i=1:length(sSlocal)
-    % visualize the trace of the slip plane
-    quiver(grain,sSlocal(i).trace,'autoScaleFactor',abs(SF(i)),'color','k')
-    hold on;
-end
-axis off;       legend off;         hold off; axis image;
-saveas(gcf,[fname,'_trace_' direction '.tif']);
 
-%% plot
+%% plot, the right oriention is the one from the ebsd map
 close all;  colormap('jet');    cc = jet(length(sSlocal));
-SOF = sort(abs(SF),'descend');
+SOF = sort((SF),'descend');
 for i=1:length(sSlocal)
-    noM(i)=ind2sub(size(SF),find(abs(SF)==SOF(i)));
+    noM(i)=ind2sub(size(SF),find((SF)==SOF(i)));
 end
 SF = round(SF,3);
 count=0;
 for i=noM
     count=count+1;
     % visualize the trace of the slip plane
-    quiver(grain,sSlocal(i).trace,'autoScaleFactor',abs(SF(i)),'color',cc(i,:),...
+    quiver(grain,sSlocal(i).trace,'autoScaleFactor',(SF(i)),'color',cc(i,:),...
         'DisplayName',[ '(' num2str(round(sS(i).n.h)) ...
         num2str(round(sS(i).n.k)) num2str(round(sS(i).n.l)) ')[' ...
         num2str(round(sS(i).b.u)) num2str(round(sS(i).b.v)) ...
-        num2str(round(sS(i).b.w)) '], ' num2str(abs(SF(i)))],'linewidth',4)
+        num2str(round(sS(i).b.w)) '], ' num2str((SF(i)))],'linewidth',4)
     hold on;
 end
 axis off;       legend off;         hold off;
@@ -125,7 +116,7 @@ set(gcf,'position',[30 50 1500 950]); axis image
 saveas(gcf,[fname,'_trace_SF_' direction '.fig']);
 saveas(gcf,[fname,'_trace_SF_' direction '.tif']);close
 
-%%
+%{
 if ~exist('Grain_stress_sample','var')
 %%
 oM = ipfHSVKey(ebsd);
@@ -171,6 +162,7 @@ lgd.NumColumns = round(length(lgd.String)/10,0);
 set(gcf,'position',[30 50 15000 9500]); axis image
 saveas(gcf,[fname,'_trace_SF_' direction '_grain2.tif']);close
 end
+%}
 end
 
 %% Grain_Map_stress_sample(x,y,spec,i,j)
@@ -178,9 +170,10 @@ function M = siMba(Grain_stress_sample)
 for i=1:3
     for j=1:3
         S(i,j) = nanmean(nanmean(abs(Grain_stress_sample(:,:,i,j))));
+        Sn(i,j) = sign(nanmean(nanmean(Grain_stress_sample(:,:,i,j))));
     end
 end
 
-M = S./sum(S(:));
+M = S./sum(S(:)).*Sn;
 
 end

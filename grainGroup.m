@@ -143,8 +143,9 @@ saveas(gcf,fullfile(DirPoleF,['Grain no all.tif']));close
 %}
 %%
 % try 
-    load([fol '_XEBSD'], 'Grain_Map_stress_sample','Map_EBSD_MTEX','GrainID_Setup',...
+    load([fol '_XEBSD'], 'Grain_Map_strain_sample','Map_EBSD_MTEX','GrainID_Setup',...
                          'GrainData','GND','Data_InputMap','MicroscopeData'); 
+                     Grain_Map_stress_sample = Grain_Map_strain_sample;
     Map_EBSD_MTEX = Map_EBSD_MTEX('indexed');
     %create the grains
     [gra,Map_EBSD_MTEX.grainId,Map_EBSD_MTEX.mis2mean]=...

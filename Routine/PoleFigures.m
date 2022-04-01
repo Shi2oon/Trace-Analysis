@@ -16,7 +16,7 @@ for i=1:length(ebsd.indexedPhasesId)
     Psi    = calcKernel(grains(ebsd.mineralList{ebsd.indexedPhasesId(i)}).meanOrientation);
     [hw]   = erroOPFe(DirPoleF,CS{i},PsI,Psi);
     odf{i} = calcODF(ebsd(ebsd.mineralList{ebsd.indexedPhasesId(i)}).orientations,'kernel',hw);
-    h      = [Miller(1,1,0,odf{i}.CS),Miller(1,1,1,odf{i}.CS),Miller(0,0,1,odf{i}.CS),Miller(1,1,2,odf{i}.CS)]; %,...
+    h      = [Miller(1,1,0,odf{i}.CS),Miller(1,1,1,odf{i}.CS),Miller(0,0,1,odf{i}.CS),Miller(1,2,1,odf{i}.CS)]; %,...
     %Miller(2,1,1,odf{i}.CS)]; 
     % h=[Miller(2,1,1,odf{i}.CS),Miller(2,0,0,odf{i}.CS),Miller(1,1,0,odf{i}.CS)];
     % with symmetry included
